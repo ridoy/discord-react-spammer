@@ -17,7 +17,7 @@ lower your voice okay. open src/inject/inject.js and change `:heart:` on the sec
 
 sometimes emojis have multiple names, like `:slight_smile:` and `:slightly_smiling_face:` are equivalent. so you have to replace `EMOJI_NAME` like `const EMOJI_NAME = ":slight_smile: :slightly_smiling_face:"`. getting all the names of an emoji is easy just look at the add reaction menu:
 
-![alt text](https://github.com/ridoy/discord-react-spammer/blob/master/example.png?raw=true | width=200)
+![alt text](https://github.com/ridoy/discord-react-spammer/blob/master/example.png?raw=true)
 
 
 hit me on twitter if it breaks okay http://twitter.com/skitzington
