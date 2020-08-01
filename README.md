@@ -11,6 +11,6 @@ epic chrome extension to spam reactions on every discord message in sight
 
 # HOW DO I CHOOSE AN EMOJI?!?
 
-lower your voice okay. open src/inject/inject.js and change :heart: on the second line to your emoji of choice.
+lower your voice okay. open src/inject/inject.js and change `:heart:` on the second line to your emoji of choice.
 
 hit me on twitter if it breaks okay http://twitter.com/skitzington
