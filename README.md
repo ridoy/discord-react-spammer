@@ -2,6 +2,8 @@
 
 epic chrome extension to spam reactions on every discord message in sight
 
+[Demo video](https://www.youtube.com/watch?v=Day6uASjhKE)
+
 # install
 
 1. download this repository, unzip
