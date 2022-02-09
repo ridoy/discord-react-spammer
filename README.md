@@ -11,12 +11,20 @@ epic chrome extension to spam reactions on every discord message in sight
 3. click "developer mode" (top right) so you can install custom extensions
 4. click load unpacked and select the folder u just downloaded
 
-now it'll spam reacts on any discord chat you open up. have fun :)
+now it'll spam reacts on any discord channel you open. have fun :)
 
 # HOW DO I CHOOSE AN EMOJI?!?
 
-lower your voice okay. open src/inject/inject.js and change `:heart:` on the second line to your emoji of choice. if u wanna use a custom emoji make sure it's available in the server you're trying to spam.
+For now, the emoji you choose has to be under "Frequently used". This will hopefully be fixed in a future version.
 
-sometimes emojis have multiple names, like `:slight_smile:` and `:slightly_smiling_face:` are equivalent. so you have to replace `EMOJI_NAME` like `const EMOJI_NAME = ":slight_smile: :slightly_smiling_face:"`. getting all the names of an emoji is easy just look at the add reaction menu:
+1. Open src/inject/inject.js
+2. Change `green_square` on line 2 to your emoji of choice
+
+
+Sometimes emojis have multiple names. In this case you'll want to update line 2 with the first name that appears in the Add Reaction search bar. For instance, in the screenshot below, set line 2 to:
+
+`const EMOJI_NAME = "handshake"`
+
 
 ![alt text](https://github.com/ridoy/discord-react-spammer/blob/master/example.png?raw=true)
+
