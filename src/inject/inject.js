@@ -11,7 +11,7 @@
  * IMPORTANT: CHANGE THIS VARIABLE TO YOUR EMOJI!
  * Make sure the emoji you choose is under "Frequently Used" in the Add Reaction menu.
  **************************************************************************************/
-const EMOJI_NAME = "green_square"
+const EMOJI_NAME = "flushed"
 console.log(`Discord React Spammer has loaded and will attempt to spam ${EMOJI_NAME}.`);
 
 // Wait for messages to load.
