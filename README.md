@@ -4,6 +4,8 @@ A Google Chrome extension. Automatically spam reactions on every Discord message
 
 # Demo Video
 
+Clicking this image takes you to YouTube.
+
 [![Watch the demo video](https://img.youtube.com/vi/Day6uASjhKE/maxresdefault.jpg)](https://www.youtube.com/watch?v=Day6uASjhKE)
 
 # Install
