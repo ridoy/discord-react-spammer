@@ -12,8 +12,11 @@
  * Make sure the emoji you choose is under "Frequently Used" in the Add Reaction menu.
  **************************************************************************************/
 const EMOJI_NAME = "flushed"
-console.log(`Discord React Spammer has loaded and will attempt to spam ${EMOJI_NAME}.`);
 
+// Other constants
+const BUTTON_WRAPPER_CLASS = "wrapper-2vIMkT";
+
+console.log(`Discord React Spammer has loaded and will attempt to spam ${EMOJI_NAME}.`);
 // Wait for messages to load.
 document.arrive('[class^="message-"]', {onceOnly: true}, function() {
     let messages = $('[class^="message-"]');
@@ -23,7 +26,10 @@ document.arrive('[class^="message-"]', {onceOnly: true}, function() {
 
     // Open Add Reaction menu for each visible message
     // Apply emoji to each message in reverse chronological order
-    let reactionButtons = $('[aria-label="Add Reaction"]');
+    
+    let buttonWrappers = document.querySelectorAll(`.${BUTTON_WRAPPER_CLASS}`);
+    let reactionButtons = [];
+    buttonWrappers.forEach((wrapper) => reactionButtons.push(wrapper.firstChild));
     for (let i = reactionButtons.length - 1; i >= 0; i--) {
         let reactionButton = reactionButtons[i];
         let time = (reactionButtons.length - 1 - i) * 500;
