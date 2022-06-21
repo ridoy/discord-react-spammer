@@ -23,7 +23,7 @@ Then, open Discord. Go to a channel. You should see a sea of emojis as soon as t
 For now, the emoji you choose has to be under "Frequently used". This will hopefully be fixed in a future version.
 
 1. Open src/inject/inject.js
-2. Change `green_square` on line 2 to your emoji of choice
+2. Change `flushed` on line 2 to your emoji of choice
 
 Sometimes emojis have multiple names. In that case, update line 2 with the first name that appears in the Add Reaction search bar. For instance, 🤝 is `:handshake: :shaking_hands:`, so we set line 2 to:
 
