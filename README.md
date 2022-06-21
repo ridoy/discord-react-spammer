@@ -11,10 +11,10 @@ Clicking this image takes you to YouTube.
 # Install
 
 1. Click the green "Code" button on this repository. Download ZIP. Unzip folder.
-2. Go to `chrome://extensions` in Chrome
-3. Click "Developer Mode" (top right) so you can install custom extensions
-4. Click "Load Unpacked" and select the unzipped folder from step 1.
-5. Open `src/inject/inject.js` and update line 2 with an emoji of your choice (instructions below)
+2. In a text editor, open `src/inject/inject.js` and update line 2 with an emoji of your choice (instructions below). Save.
+3. Go to `chrome://extensions` in Chrome
+4. Click "Developer Mode" (top right) so you can install custom extensions
+5. Click "Load Unpacked" and select the unzipped folder from step 1.
 
 Then, open Discord. Go to a channel. You should see a sea of emojis as soon as the chat loads.
 
