@@ -1,3 +1,5 @@
+# Currently broken! Discord has changed some things making it harder to add reactions. An update is forthcoming.
+
 # DISCORD REACT SPAMMER
 
 A Google Chrome extension. Automatically spam reactions on every Discord message in sight.
