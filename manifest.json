@@ -1,6 +1,6 @@
 {
   "name": "DISCORD REACT SPAMMER",
-  "version": "0.0.1",
+  "version": "2.0",
   "manifest_version": 2,
   "description": "DISCORD REACT SPAMMER",
   "homepage_url": "https://github.com/ridoy/discord-react-spammer",
@@ -9,26 +9,19 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
+  "permissions": [
+      "webRequest",
+      "*://*.discord.com/*",
+      "tabs"
+  ],
   "background": {
-    "page": "src/bg/background.html",
+    "scripts": ["src/bg/background.js"],
     "persistent": true
   },
   "default_locale": "en",
-  "page_action": {
+  "browser_action": {
     "default_icon": "icons/icon19.png",
     "default_title": "page action demo",
-    "default_popup": "src/page_action/page_action.html"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://discord.com/channels/*"
-      ],
-      "js": [
-        "js/jquery-3.3.1.min.js",
-        "js/arrive.min.js",
-        "src/inject/inject.js"
-      ]
-    }
-  ]
+    "default_popup": "src/popup/popup.html"
+  }
 }
