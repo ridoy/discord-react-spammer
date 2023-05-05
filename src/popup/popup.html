@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>Discord React Spammer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <style>
+    body {
+        width: 250px;
+        height: 200px;
+        overflow: scroll;
+    }
+    .emoji {
+        display: inline-block;
+        cursor: pointer;
+        font-size: 20px;
+        padding: 2px;
+        border-radius: 2px;
+    }
+    .emoji:hover {
+        background: green;
+    }
+    .emoji.active {
+        background: green;
+    }
+  </style>
+  <body>
+    <div>Emojis go here</div>
+    <button id="start-button">Begin spam</button>
+    <div class="emoji-container">
+        
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

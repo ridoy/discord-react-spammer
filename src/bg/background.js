@@ -1,19 +1,4 @@
-//example of using a message handler from the inject scripts
-chrome.extension.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        chrome.pageAction.show(sender.tab.id);
-        sendResponse();
-    });
-
-
-// Before we can start, we need
-// First message id, channel id
-// Authorization header and everything else
-// Then when ready, hit new messages endpoint, hit reaction endpoint slowly
-
 let authToken = null;
-let channelId = ;
-let mostRecentMessageId = ;
 
 /*
  * Scan requests until we find one with an auth token.
@@ -24,15 +9,27 @@ chrome.webRequest.onSendHeaders.addListener(
         let auth = request.requestHeaders.filter((h) => h.name === "Authorization");
         if (auth.length > 0) {
             authToken = auth[0].value;
-            startPosting();
         }
     },
     { urls: ["https://discord.com/*"] },
     ['requestHeaders']
 );
 
-function startPosting() {
-    let messages = getMessages() 
+/*
+ * Listen for a "begin spam" request from the popup.
+ */
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.msg === "startSpam" && authToken) {
+            console.log(request);
+            const channelId = request.data.url.split("/")[5];
+            startPosting(channelId, request.data.emoji);
+        }
+    }
+)
+
+function startPosting(channelId, emoji) {
+    getMessages(channelId) 
         .then((response) => {
             const reader = response.body.getReader();
             return new ReadableStream({
@@ -55,13 +52,13 @@ function startPosting() {
             new Response(stream, { headers: { "Content-Type": "application/json" } }).text()
         )
         .then((messages) => {
-            const messageIds = JSON.parse(result).map(entry=>entry.id);
-            addReactions();
+            const messageIds = JSON.parse(messages).map(entry=>entry.id).reverse(); // React to messages from newest to oldest
+            addReactions(channelId, messageIds, emoji);
         });
 }
 
-function getMessages() {
-    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages?before=${mostRecentMessageId}&limit=50`, {
+function getMessages(channelId) {
+    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages?limit=50`, {
         "headers": {
             "authorization": authToken,
         },
@@ -72,21 +69,21 @@ function getMessages() {
     });
 }
 
-function addReactions(ids) {
+function addReactions(channelId, ids, emoji) {
     if (ids.length <= 0) return;
     let nextId = ids.pop();
-    addReaction(nextId);
+    addReaction(channelId, nextId, emoji);
 
     console.log(ids.length);
 
     setTimeout(() => { 
-        addReactions(ids) 
+        addReactions(channelId, ids, emoji) 
     }, 1000);
 
 }
 
-function addReaction(id) {
-    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages/${id}/reactions/%F0%9F%98%B3/%40me?location=Message&type=0`, {
+function addReaction(channelId, id, emoji) {
+    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages/${id}/reactions/${emoji}/%40me?location=Message&type=0`, {
         "headers": {
             "authorization": authToken,
         },
