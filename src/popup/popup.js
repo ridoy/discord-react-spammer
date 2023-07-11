@@ -94,10 +94,10 @@ const emojis = [
 let activeEmoji = emojis[0];
 
 // Build emoji menu.
-for (let emoji of emojis) {
+for (let [index, emoji] of emojis.entries()) {
     let el = document.createElement('div');
     el.textContent = emoji;
-    el.className = "emoji"
+    el.className = (index === 0) ? "emoji active" : "emoji";
     el.addEventListener('click', function() {
         let currentActiveEl = document.getElementsByClassName("emoji active");
         if (currentActiveEl[0]) {
@@ -114,9 +114,11 @@ for (let emoji of emojis) {
 window.onload = function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         const url = tabs[0].url;
-        const regex = /(https:\/\/discord.com\/channels\/)([0-9])+(\/)([0-9])+/
-        let currentPageIsDiscordChannel = (regex.exec(url)) ? true : false;
-        if (!currentPageIsDiscordChannel) {
+        const isChannelRegex = /(https:\/\/discord.com\/channels\/)([0-9])+(\/)([0-9])+/
+        const isConversationRegex = /(https:\/\/discord.com\/channels\/)@me(\/)([0-9])+/
+        let currentPageIsChannel = (isChannelRegex.exec(url)) ? true : false;
+        let currentPageIsConversation = (isConversationRegex.exec(url)) ? true : false;
+        if (!currentPageIsChannel && !currentPageIsConversation) {
             document.getElementById("start-button").disabled = true;
             return;
         }
