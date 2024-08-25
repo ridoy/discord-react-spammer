@@ -114,17 +114,15 @@ for (let [index, emoji] of emojis.entries()) {
 window.onload = function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         const url = tabs[0].url;
-        const isChannelRegex = /(https:\/\/discord.com\/channels\/)([0-9])+(\/)([0-9])+/
-        const isConversationRegex = /(https:\/\/discord.com\/channels\/)@me(\/)([0-9])+/
-        let currentPageIsChannel = (isChannelRegex.exec(url)) ? true : false;
-        let currentPageIsConversation = (isConversationRegex.exec(url)) ? true : false;
+        const currentPageIsChannel = (/(https:\/\/discord.com\/channels\/)([0-9])+(\/)([0-9])+/.exec(url)) ? true : false;
+        const currentPageIsConversation = (/(https:\/\/discord.com\/channels\/)@me(\/)([0-9])+/.exec(url)) ? true : false;
         if (!currentPageIsChannel && !currentPageIsConversation) {
             document.getElementById("start-button").disabled = true;
             return;
         }
         document.getElementById("start-button").disabled = false;
         document.getElementById("start-button").addEventListener('click', function() {
-            // sned message with emoji and current location
+            // send message with emoji and current location
             chrome.runtime.sendMessage({
                 msg: "startSpam", 
                 data: {
