@@ -58,7 +58,7 @@ function startPosting(channelId, emoji) {
 }
 
 function getMessages(channelId) {
-    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages?limit=50`, {
+    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages?limit=4`, {
         "headers": {
             "authorization": authToken,
         },
@@ -71,27 +71,26 @@ function getMessages(channelId) {
 
 function addReactions(channelId, ids, emoji) {
     if (ids.length <= 0) return;
-    let nextId = ids.pop();
-    addReaction(channelId, nextId, emoji);
-
-    console.log(ids.length);
-
-    setTimeout(() => { 
-        addReactions(channelId, ids, emoji) 
+    const intervalId = setInterval(() => { 
+        let nextId = ids.pop();
+        if (!nextId) return clearInterval(intervalId)
+        addReaction(channelId, nextId, emoji);
     }, 1000);
-
 }
 
-function addReaction(channelId, id, emoji) {
-    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages/${id}/reactions/${emoji}/%40me?location=Message&type=0`, {
-        "headers": {
-            "authorization": authToken,
-        },
-        "body": null,
-        "method": "PUT",
-        "mode": "cors",
-        "credentials": "include"
-    })
-        .then((res) => console.log(res))
-        .catch(e => console.log(e, id));
+async function addReaction(channelId, id, emoji) {
+    try {
+        const res = await fetch(`https://discord.com/api/v9/channels/${channelId}/messages/${id}/reactions/${emoji}/%40me?location=Message&type=0`, {
+            "headers": {
+                "authorization": authToken,
+            },
+            "body": null,
+            "method": "PUT",
+            "mode": "cors",
+            "credentials": "include"
+        });
+        return console.log(res);
+    } catch (e) {
+        return console.log(e, id);
+    }
 }
