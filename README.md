@@ -15,7 +15,7 @@
 ## Setup
 
 To install this in Google Chrome:
-1. Click the green "Code" button on this repository. Download ZIP. Unzip folder.
+1. Download as ZIP here: https://github.com/ridoy/discord-react-spammer/archive/refs/heads/master.zip
 2. Go to `chrome://extensions` in Chrome
 3. Click "Developer Mode" (top right) so you can install custom extensions
 4. Click "Load Unpacked" and select the unzipped folder from step 1.
