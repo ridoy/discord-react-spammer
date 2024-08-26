@@ -1,4 +1,6 @@
-const emojis = [
+"use strict";
+
+const EMOJIS = [
     "😀","😃","😄","😁","😆","😅","🤣","😂","🙂","🙃","😉","😊","😇","🥰","😍","🤩","😘","😗",
     "☺","😚","😙","😋","😛","😜","🤪","😝","🤑","🤗","🤭","🤫","🤔","🤐","🤨","😐","😑","😶",
     "😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶",
@@ -91,45 +93,110 @@ const emojis = [
     "🇹🇲","🇹🇳","🇹🇴","🇹🇷","🇹🇹","🇹🇻","🇹🇼","🇹🇿","🇺🇦","🇺🇬","🇺🇲","🇺🇳","🇺🇸","🇺🇾","🇺🇿","🇻🇦","🇻🇨","🇻🇪",
     "🇻🇬","🇻🇮","🇻🇳","🇻🇺","🇼🇫","🇼🇸","🇽🇰","🇾🇪","🇾🇹","🇿🇦","🇿🇲","🇿🇼","🏴󠁧󠁢󠁥󠁮󠁧󠁿","🏴󠁧󠁢󠁳󠁣󠁴󠁿","🏴󠁧󠁢󠁷󠁬󠁳󠁿"
 ];
-let activeEmoji = emojis[0];
+const DISCORD_URL_REGEX = /^https:\/\/discord\.com\/channels\/(@me|[0-9]+)\/[0-9]+$/;
 
-// Build emoji menu.
-for (let [index, emoji] of emojis.entries()) {
-    let el = document.createElement('div');
-    el.textContent = emoji;
-    el.className = (index === 0) ? "emoji active" : "emoji";
-    el.addEventListener('click', function() {
-        let currentActiveEl = document.getElementsByClassName("emoji active");
-        if (currentActiveEl[0]) {
-            currentActiveEl[0].classList.remove("active");
-        }
-        el.classList.add("active")
+class EmojiSpammer {
+    constructor() {
+        this.activeEmoji = EMOJIS[0];
+        this.isPosting = false;
+        this.startButton = null;
+        this.setupMessageListener();
+    }
 
-        activeEmoji = emoji;
-    })
-    document.body.appendChild(el);
+    init() {
+        window.addEventListener('load', () => this.onWindowLoad());
+    }
+
+    onWindowLoad() {
+        chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
+            this.startButton = document.getElementById("start-button");
+            
+            if (this.isDiscordChannel(tab.url)) {
+                this.buildEmojiMenu();
+                this.attachEventListeners(tab.url);
+                this.loadSpamState(tab.url);
+            } else {
+                this.startButton.disabled = true;
+            }
+        });
+    }
+
+    loadSpamState(url) {
+        chrome.storage.local.get(['isPosting', 'activeEmoji'], (result) => {
+            this.isPosting = result.isPosting || false;
+            this.activeEmoji = result.activeEmoji || EMOJIS[0];
+            this.updateButtonState();
+            if (this.isPosting) {
+                // Re-start spamming if it was active
+                chrome.runtime.sendMessage({
+                    msg: "startSpam",
+                    data: { url, emoji: this.activeEmoji }
+                });
+            }
+        });
+    }
+
+    updateButtonState() {
+        this.startButton.innerText = this.isPosting ? "Stop spam" : "Start spam";
+        this.startButton.disabled = false;
+    }
+
+    isDiscordChannel(url) {
+        return DISCORD_URL_REGEX.test(url);
+    }
+
+    attachEventListeners(url) {
+        this.startButton.addEventListener('click', () => this.toggleSpamming(url));
+    }
+
+    toggleSpamming(url) {
+        this.isPosting = !this.isPosting;
+        this.updateButtonState();
+
+        chrome.storage.local.set({ isPosting: this.isPosting, activeEmoji: this.activeEmoji });
+
+        chrome.runtime.sendMessage({
+            msg: this.isPosting ? "startSpam" : "stopSpam",
+            data: this.isPosting ? { url, emoji: this.activeEmoji } : undefined
+        });
+    }
+
+    buildEmojiMenu() {
+        const emojiContainer = document.createElement('div');
+        emojiContainer.className = 'emoji-container';
+
+        EMOJIS.forEach((emoji, index) => {
+            const el = document.createElement('div');
+            el.textContent = emoji;
+            el.className = `emoji ${emoji === this.activeEmoji ? 'active' : ''}`;
+            el.addEventListener('click', () => this.setActiveEmoji(el, emoji));
+            emojiContainer.appendChild(el);
+        });
+
+        document.body.appendChild(emojiContainer);
+    }
+
+    setActiveEmoji(element, emoji) {
+        document.querySelector('.emoji.active')?.classList.remove('active');
+        element.classList.add('active');
+        this.activeEmoji = emoji;
+        chrome.storage.local.set({ activeEmoji: emoji });
+    }
+
+    setupMessageListener() {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            if (request.msg === "spamComplete") {
+                this.handleSpamComplete();
+            }
+        });
+    }
+
+    handleSpamComplete() {
+        this.isPosting = false;
+        this.updateButtonState();
+        chrome.storage.local.set({ isPosting: false });
+    }
 }
 
-// Attach start button listener that triggers reaction spammer in background.js.
-window.onload = function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        const url = tabs[0].url;
-        const currentPageIsChannel = (/(https:\/\/discord.com\/channels\/)([0-9])+(\/)([0-9])+/.exec(url)) ? true : false;
-        const currentPageIsConversation = (/(https:\/\/discord.com\/channels\/)@me(\/)([0-9])+/.exec(url)) ? true : false;
-        if (!currentPageIsChannel && !currentPageIsConversation) {
-            document.getElementById("start-button").disabled = true;
-            return;
-        }
-        document.getElementById("start-button").disabled = false;
-        document.getElementById("start-button").addEventListener('click', function() {
-            // send message with emoji and current location
-            chrome.runtime.sendMessage({
-                msg: "startSpam", 
-                data: {
-                    url: url,
-                    emoji: activeEmoji
-                }
-            });
-        });  
-    });
-}
+const spammer = new EmojiSpammer();
+spammer.init();

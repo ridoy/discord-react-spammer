@@ -12,7 +12,8 @@
   "permissions": [
       "webRequest",
       "*://*.discord.com/*",
-      "tabs"
+      "tabs",
+      "storage"
   ],
   "background": {
     "scripts": ["src/bg/background.js"],

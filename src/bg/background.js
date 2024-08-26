@@ -1,4 +1,5 @@
 let authToken = null;
+let isPosting = false;
 
 /*
  * Scan requests until we find one with an auth token.
@@ -21,9 +22,11 @@ chrome.webRequest.onSendHeaders.addListener(
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.msg === "startSpam" && authToken) {
-            console.log(request);
             const channelId = request.data.url.split("/")[5];
+            isPosting = true;
             startPosting(channelId, request.data.emoji);
+        } else if (request.msg === "stopSpam") {
+            isPosting = false;
         }
     }
 )
@@ -73,7 +76,11 @@ function addReactions(channelId, ids, emoji) {
     if (ids.length <= 0) return;
     const intervalId = setInterval(() => { 
         let nextId = ids.pop();
-        if (!nextId) return clearInterval(intervalId)
+        if (!nextId || !isPosting) {
+            chrome.runtime.sendMessage({ msg: "spamComplete" });
+            clearInterval(intervalId)
+            return;
+        }
         addReaction(channelId, nextId, emoji);
     }, 1000);
 }
