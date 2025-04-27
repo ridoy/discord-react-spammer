@@ -61,7 +61,7 @@ function startPosting(channelId, emoji) {
 }
 
 function getMessages(channelId) {
-    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages?limit=4`, {
+    return fetch(`https://discord.com/api/v9/channels/${channelId}/messages?limit=100`, {
         "headers": {
             "authorization": authToken,
         },
